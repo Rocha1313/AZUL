@@ -104,6 +104,7 @@ public class Bag {
             }
         }
 
+        updateNumberBagPieces();
         return new Piece[]{santaPiece, giftPiece, christmasTreePiece, snowManPiece, reindeerPiece};
     }
 
