@@ -11,4 +11,6 @@ public class Player {
         score = 0;
         board = new Board();
     }
+
+
 }

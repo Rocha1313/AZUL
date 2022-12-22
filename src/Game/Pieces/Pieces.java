@@ -1,6 +1,6 @@
-package Enums;
+package Game.Pieces;
 
-public enum Piece {
+public enum Pieces {
     SANTA("🎅"),
     CHRISTMAS_TREE("🎄"),
     GIFT("🎁"),
@@ -9,7 +9,7 @@ public enum Piece {
 
     private final String pattern;
 
-    Piece(String pattern){
+    Pieces(String pattern){
         this.pattern = pattern;
     }
 
