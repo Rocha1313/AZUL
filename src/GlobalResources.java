@@ -1,3 +1,6 @@
+import java.util.Random;
+import java.util.Scanner;
+
 public class GlobalResources {
     public static final Scanner sc = new Scanner(System.in);
 

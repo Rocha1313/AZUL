@@ -1,15 +1,17 @@
-public enum PIECE {
-    SANTA('🎅'),
-    CHRISTMAS_TREE('🎄'),
-    GIFT('🎁'),
-    SNOWMAN('⛄️'),
-    REINDEER('🦌');
+public enum Piece {
+    SANTA("🎅"),
+    CHRISTMAS_TREE("🎄"),
+    GIFT("🎁"),
+    SNOWMAN("⛄️"),
+    REINDEER("🦌");
 
-    private final char pattern;
+    private final String pattern;
 
 // System.out.println("\e[" + piece.getPrintableColorCode() + "m" +  piece.getPattern() + "\e[0m")
 
-    public Piece(char pattern) {
+
+
+    Piece(String pattern) {
         this.pattern = pattern;
     }
 }
