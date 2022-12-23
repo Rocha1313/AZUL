@@ -1,3 +1,5 @@
+import java.util.Collection;
+
 public class Player {
 
     public static final int NUMBER_OF_PATTERN_LINES = 5;
@@ -17,5 +19,22 @@ public class Player {
         }
 
         leftOverLine = new Piece[NUMBER_OF_PIECES_LEFTOVER_LINE];
+    }
+
+    public PlayChoice choosePieces(Collection<Factory> factories, Garbage garbage) {
+        return null;
+    }
+
+    public void placePieces(int patternLineIndex, Collection<Piece> pieces) {
+
+    }
+
+    // move pieces from pattern line to wall and return the remaining pieces from the pattern lines and from the leftover line
+    public Collection<Piece> movePiecesToWall() {
+        return null;
+    }
+
+    public boolean hasWallWithLineCompleted() {
+        return false;
     }
 }

@@ -7,7 +7,12 @@ public class Main {
         int numPlayers = GlobalResources.sc.nextInt();
 
         AzulGame ag = new AzulGame(numPlayers);
-        ag.play();
 
+        // play rounds until game over
+        while(!ag.playRound());
+
+        ag.getStandings();
+
+        // Player with the biggest score Wins
     }
 }

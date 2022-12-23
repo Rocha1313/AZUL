@@ -3,7 +3,9 @@ public enum Piece {
     CHRISTMAS_TREE("🎄"),
     GIFT("🎁"),
     SNOWMAN("⛄️"),
-    REINDEER("🦌");
+    REINDEER("🦌"),
+
+    STARTING_PIECE("MENOSUM");
 
     private final String pattern;
 
