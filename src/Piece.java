@@ -16,4 +16,8 @@ public enum Piece {
     Piece(String pattern) {
         this.pattern = pattern;
     }
+
+    public String getPattern() {
+        return pattern;
+    }
 }
