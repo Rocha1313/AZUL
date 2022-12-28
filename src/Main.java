@@ -1,5 +1,3 @@
-// echo -e "without being filled: \e[0m⛄\e[0m🎁\e[0m🎅\e[0m🎄\e[0m🦌\nWall:\n\e[1;44m⛄\e[1;43m🎁\e[1;41m🎅\e[1;40m🎄\e[1;46m🦌\e[0m\n\e[1;46m🦌\e[1;44m⛄\e[1;43m🎁\e[1;41m🎅\e[1;40m🎄\e[0m\n\e[1;40m🎄\e[1;46m🦌\e[1;44m⛄\e[1;43m🎁\e[1;41m🎅\e[0m\n\e[1;41m🎅\e[1;40m🎄\e[1;46m🦌\e[1;44m⛄\e[1;43m🎁\e[0m\n\e[1;43m🎁\e[1;41m🎅\e[1;40m🎄\e[1;46m🦌\e[1;44m⛄\e[0m\n"
-
 public class Main {
     public static void main(String[] args) {
         // TODO: validate num of players
