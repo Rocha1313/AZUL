@@ -10,15 +10,34 @@ public class PieceFactory implements Factory{
     @Override
     public void fill(Collection<Piece> pieces) throws NotEnoughPiecesException {
 
+        if (pieces.size() < 4){
+            throw new NotEnoughPiecesException();
+        }
+
+        this.pieces.addAll(pieces);
     }
 
     @Override
     public Collection<Piece> getPieces(Piece pattern) throws PiecesNotFoundException {
-        return null;
+        Collection<Piece> tempList = new ArrayList<>();
+
+         for(int i = 0; i < this.pieces.size(); i++){
+             if (this.pieces.get(i).getPattern().equals(pattern.getPattern())){
+                 tempList.add(this.pieces.remove(i));
+             }
+         }
+
+         if (tempList.isEmpty()){
+             throw new PiecesNotFoundException();
+         }
+
+         return tempList;
     }
 
     @Override
     public Collection<Piece> getLeftOverPieces() {
-        return null;
+        Collection<Piece> tempList = this.pieces;
+        this.pieces.clear();
+        return tempList;
     }
 }
