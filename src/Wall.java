@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Wall {
     private static final Piece[][] WALL_PATTERN = {
         { Piece.SNOWMAN, Piece.GIFT, Piece.SANTA, Piece.CHRISTMAS_TREE, Piece.REINDEER },
@@ -11,6 +13,18 @@ public class Wall {
 
     public Wall() {
         wallStatus = new boolean[5][5];
+    }
+
+    public int move(Piece p, int line) {
+        // find index of pattern in given line
+        int indexOfPiece = findIndexOf(WALL_PATTERN[line], p);
+        // mark piece field on the wall
+        wallStatus[line][indexOfPiece] = true;
+
+        // calculate piece score and return the score
+        int pieceScore = 0;
+
+        return pieceScore;
     }
 
 }
