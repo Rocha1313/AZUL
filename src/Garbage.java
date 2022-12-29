@@ -6,6 +6,6 @@ public interface Garbage {
 
     void add(Collection<Piece> pieces);
 
-    Collection<Piece> getPieces(Piece pattern);
+    Collection<Piece> getPieces(Piece pattern) throws PiecesNotFoundException;
 
 }

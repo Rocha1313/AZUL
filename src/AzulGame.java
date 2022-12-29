@@ -53,75 +53,80 @@ public class AzulGame {
         // Prepare Round
         ////////////////////
 
-        // fill factories with pieces from bag
-        for (Factory factory : factories) {
-            Collection<Piece> pieces;
+        try {
+            // fill factories with pieces from bag
+            for (Factory factory : factories) {
+                Collection<Piece> pieces;
 
-            // if bag doesn't have enough pieces, recycle pieces (put all pieces from recycler into bag)
-            if (bag.getAmount() < 4) {
-                bag.reFill(recycler.getPieces());
-            }
+                // if bag doesn't have enough pieces, recycle pieces (put all pieces from recycler into bag)
+                if (bag.getAmount() < AzulConstants.FACTORY_PIECE_CAPACITY) {
+                    bag.reFill(recycler.getPieces());
+                }
 
-            // fill the factories with pieces
-            try {
+                // fill the factories with pieces
                 pieces = bag.getPieces();
                 factory.fill(pieces);
-            } catch (NotEnoughPiecesException e) {
-                System.out.println("Warning: Failure in getting/placing pieces, game cannot continue!!!");
-                return true;
             }
+        } catch (FactoryException | BagException e) {
+            throw new GameStateException("Failure in preparing Round", e);
         }
 
         ////////////////////
         // Player round
         ////////////////////
+        //TODO: surround player round logic with try/catch
+        //the majority of exceptions should not occur because the player logic is validated and hopefully the code doesn't make calls into a bad state.
         // starting player to play
+
         int currentPlayerIndex = startingPlayerIndex;
         // while FACTORIES/GARBAGE have pieces
         while (!garbage.isEmpty() && !areFactoriesEmpty()) {
-            Player currentPlayer = players[currentPlayerIndex];
 
-            // ask current player for
-            // - pattern
-            // - place(a factory or garbage)
-            // - pattern line
-            // and validate this is a valid play
-            PlayChoice choice;
-            do {
-                display();
-                choice = currentPlayer.choosePieces(Arrays.asList(factories), garbage);
-            } while (!validateChoice(choice, currentPlayer));
+            try {
+                Player currentPlayer = players[currentPlayerIndex];
 
-            Collection<Piece> pieces = null;
-            // take pieces with chosen pattern from chosen place
-            switch (choice.getPlaceType()) {
-                case FACTORY:
-                    try {
+                // ask current player for
+                // - pattern
+                // - place(a factory or garbage)
+                // - pattern line
+                // and validate this is a valid play
+                PlayChoice choice;
+                do {
+                    display();
+                    choice = currentPlayer.choosePieces(Arrays.asList(factories), garbage);
+                } while (!validateChoice(choice, currentPlayer));
+
+                Collection<Piece> pieces = null;
+                // take pieces with chosen pattern from chosen place
+                switch (choice.getPlaceType()) {
+                    case FACTORY:
                         pieces = choice.getFactory().getPieces(choice.getPattern());
-                    } catch (PiecesNotFoundException e) {
-                        throw new GameStateException(e);
-                    }
-                    garbage.add(choice.getFactory().getLeftOverPieces());
-                    break;
 
-                case GARBAGE:
-                    pieces = choice.getGarbage().getPieces(choice.getPattern());
-                    break;
-            }
+                        garbage.add(choice.getFactory().getLeftOverPieces());
+                        break;
 
-            // player places pieces on its board on the chosen line
-            currentPlayer.placePieces(choice.getPatternLineIndex(), pieces);
+                    case GARBAGE:
+                        pieces = choice.getGarbage().getPieces(choice.getPattern());
+                        break;
+                }
 
-            // switch players turn
-            currentPlayerIndex++;
-            if (currentPlayerIndex >= players.length) {
-                currentPlayerIndex = 0;
+                // player places pieces on its board on the chosen line
+                currentPlayer.placePieces(choice.getPatternLineIndex(), pieces);
+
+                // switch players turn
+                currentPlayerIndex++;
+                if (currentPlayerIndex >= players.length) {
+                    currentPlayerIndex = 0;
+                }
+            } catch ( PiecesNotFoundException e) {
+                throw new GameStateException("Failure in player round", e);
             }
         }
-
         ////////////////////
         // End round
         ////////////////////
+        //TODO: surround player round logic with try/catch
+        //the majority of exceptions should not occur because the player logic is validated and hopefully the code doesnt make calls into a bad state.
         for (int i = 0; i < players.length; i++) {
             Player player = players[i];
             // the player itself moves pieces from completed pattern lines to the wall
@@ -169,11 +174,20 @@ public class AzulGame {
     }
 
     private boolean validateChoice(PlayChoice choice, Player player) {
+
         return false;
     }
 
     private boolean areFactoriesEmpty() {
-        return false;
+        boolean emptyFactories = true;
+
+        for (Factory factory : factories) {
+            if (!factory.isEmpty()) {
+                emptyFactories = false;
+            }
+        }
+
+        return emptyFactories;
     }
 
 }

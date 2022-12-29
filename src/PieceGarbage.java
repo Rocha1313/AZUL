@@ -28,16 +28,24 @@ public class PieceGarbage implements Garbage {
     }
 
     @Override
-    public Collection<Piece> getPieces(Piece pattern) {
+    public Collection<Piece> getPieces(Piece pattern) throws PiecesNotFoundException {
         Collection<Piece> patternGarbagePieces = new ArrayList<>();
 
-        for(Piece piece : garbagePieces) {
-            if(piece.equals(pattern)) {
+        for (Piece piece : garbagePieces) {
+            if (piece.equals(pattern)) {
                 patternGarbagePieces.add(piece);
                 garbagePieces.remove(piece);
             }
+
+            if (garbagePieces.contains(Piece.STARTING_PIECE)) {
+                patternGarbagePieces.add(piece);
+            }
         }
 
+        // TODO: check pieces with pattern were found and if need to include starting pieces
+        if (patternGarbagePieces.isEmpty()) {
+            throw new PiecesNotFoundException("Failure: Pattern not found in Garbage.");
+        }
 
         return patternGarbagePieces;
     }

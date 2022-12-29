@@ -9,7 +9,7 @@ public class PieceBag implements Bag {
 
     public PieceBag() {
         for (Piece piece : Piece.values()) {
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < AzulConstants.PIECES_PER_PATTERN; i++) {
                 pieces.add(piece);
             }
         }
@@ -17,40 +17,31 @@ public class PieceBag implements Bag {
 
     @Override
     public int getAmount() {
-        int amount = 0;
-
-        for (int i = 0; i < pieces.size(); i++) {
-            amount++;
-        }
-        return amount;
+        return pieces.size();
     }
 
     @Override
-    public void reFill(Collection<Piece> recyclerPieces) {
+    public void reFill(Collection<Piece> recyclerPieces) throws PieceBagWithEnoughPiecesToFillFactoriesException {
+        if(pieces.size() >= AzulConstants.FACTORY_PIECE_CAPACITY) {
+            throw new PieceBagWithEnoughPiecesToFillFactoriesException();
+        }
         pieces.addAll(recyclerPieces);
     }
 
     @Override
     public Collection<Piece> getPieces() throws NotEnoughPiecesException {
-        // Choose randomly 4 pieces from the bag
+        // Choose randomly FACTORY_PIECE_CAPACITY pieces from the bag
 
         List<Piece> piecesToFactory = new ArrayList<>();
 
-        int randPiece;
-
-        if (getAmount() < 4) {
-            throw new NotEnoughPiecesException("Warning: Failure in getting/placing pieces.");
+        if (pieces.size() < AzulConstants.FACTORY_PIECE_CAPACITY) {
+            throw new NotEnoughPiecesException(String.format("Warning: only %d pieces in the bag.", pieces.size()));
         }
 
-        for (int i = 0; i < 4; i++) {
-            randPiece = GlobalResources.random.nextInt(pieces.size());
+        for (int i = 0; i < AzulConstants.FACTORY_PIECE_CAPACITY; i++) {
+            int randPiece = GlobalResources.random.nextInt(pieces.size());
 
-            for (Piece piece : pieces) {
-                if (i == randPiece) {
-                    piecesToFactory.add(piece);
-                    pieces.remove(piece);
-                }
-            }
+            piecesToFactory.add(pieces.remove(randPiece));
         }
 
         return piecesToFactory;

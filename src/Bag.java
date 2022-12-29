@@ -4,8 +4,8 @@ public interface Bag {
 
     int getAmount();
 
-    void reFill(Collection<Piece> pieces);
+    void reFill(Collection<Piece> pieces) throws PieceBagWithEnoughPiecesToFillFactoriesException;
 
-    //return 4 pieces from the bag or throw an exception if not possible
+    //return FACTORY_PIECE_CAPACITY pieces from the bag or throw an exception if not possible
     Collection<Piece> getPieces() throws NotEnoughPiecesException;
 }

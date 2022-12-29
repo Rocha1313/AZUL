@@ -1,4 +1,4 @@
-public class NotEnoughPiecesException extends Exception {
+public class NotEnoughPiecesException extends BagException {
     public NotEnoughPiecesException() {
     }
 
