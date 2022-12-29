@@ -119,6 +119,16 @@ public class Player {
     }
 
     public boolean hasWallWithLineCompleted() {
+        for (int i = 0; i < wall.getWallStatus().length; i++){
+            for (int f = 0; f < wall.getWallStatus()[i].length; f++){
+                if (!wall.getWallStatus()[i][f]){
+                    break;
+                }
+                if(f == (wall.getWallStatus()[i].length - 1)){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 }

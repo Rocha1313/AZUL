@@ -27,4 +27,7 @@ public class Wall {
         return pieceScore;
     }
 
+    public boolean[][] getWallStatus() {
+        return wallStatus;
+    }
 }
