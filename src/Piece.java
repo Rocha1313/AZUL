@@ -5,7 +5,7 @@ public enum Piece {
     SNOWMAN("⛄️"),
     REINDEER("🦌"),
 
-    STARTING_PIECE("MENOSUM");
+    STARTING_PIECE("1️⃣");
 
     private final String pattern;
 
