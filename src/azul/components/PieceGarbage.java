@@ -1,3 +1,7 @@
+package azul.components;
+
+import azul.exceptions.PiecesNotFoundException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,22 +35,39 @@ public class PieceGarbage implements Garbage {
     public Collection<Piece> getPieces(Piece pattern) throws PiecesNotFoundException {
         Collection<Piece> patternGarbagePieces = new ArrayList<>();
 
+        if (garbagePieces.contains(Piece.STARTING_PIECE)) {
+            patternGarbagePieces.add(Piece.STARTING_PIECE);
+            garbagePieces.remove(Piece.STARTING_PIECE);
+        }
+
         for (Piece piece : garbagePieces) {
             if (piece.equals(pattern)) {
                 patternGarbagePieces.add(piece);
-                garbagePieces.remove(piece);
             }
-
-            if (garbagePieces.contains(Piece.STARTING_PIECE)) {
-                patternGarbagePieces.add(piece);
-            }
+        }
+        for (Piece piece : patternGarbagePieces) {
+            garbagePieces.remove(piece);
         }
 
         // TODO: check pieces with pattern were found and if need to include starting pieces
         if (patternGarbagePieces.isEmpty()) {
-            throw new PiecesNotFoundException("Failure: Pattern not found in Garbage.");
+            throw new PiecesNotFoundException("Failure: Pattern not found in azul.components.Garbage.");
         }
 
         return patternGarbagePieces;
+    }
+
+    @Override
+    public boolean hasPattern(Piece pattern) {
+        return garbagePieces.contains(pattern);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Piece p : garbagePieces) {
+            sb.append(p);
+        }
+        return sb.toString();
     }
 }

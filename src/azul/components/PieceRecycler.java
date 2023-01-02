@@ -1,8 +1,9 @@
+package azul.components;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-public class PieceRecycler implements Recycler{
+public class PieceRecycler implements Recycler {
     private Collection<Piece> pieces = new ArrayList<>();
 
     @Override

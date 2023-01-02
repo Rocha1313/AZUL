@@ -1,3 +1,5 @@
+package azul.exceptions;
+
 public class PiecesNotFoundException extends Exception {
     public PiecesNotFoundException() {
     }

@@ -1,3 +1,5 @@
+package azul.exceptions;
+
 public class FactoryException extends Exception {
     public FactoryException() {
     }

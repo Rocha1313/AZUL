@@ -1,3 +1,5 @@
+package azul.exceptions;
+
 public class PieceBagWithEnoughPiecesToFillFactoriesException extends BagException {
     public PieceBagWithEnoughPiecesToFillFactoriesException() {
     }

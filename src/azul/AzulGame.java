@@ -1,6 +1,12 @@
+package azul;
+
+import azul.components.*;
+import azul.exceptions.*;
+import azul.player.PlayChoice;
+import azul.player.Player;
+
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class AzulGame {
@@ -27,7 +33,7 @@ public class AzulGame {
         }
 
         // Choose randomly who starts the game
-        startingPlayerIndex = GlobalResources.random.nextInt(players.length);
+        startingPlayerIndex = GlobalResources.RANDOM.nextInt(players.length);
 
         switch (numPlayers) {
             case 2 -> factories = new PieceFactory[5];
@@ -72,7 +78,7 @@ public class AzulGame {
         }
 
         ////////////////////
-        // Player round
+        // azul.player.Player round
         ////////////////////
         //TODO: surround player round logic with try/catch
         //the majority of exceptions should not occur because the player logic is validated and hopefully the code doesn't make calls into a bad state.
@@ -80,7 +86,7 @@ public class AzulGame {
 
         int currentPlayerIndex = startingPlayerIndex;
         // while FACTORIES/GARBAGE have pieces
-        while (!garbage.isEmpty() && !areFactoriesEmpty()) {
+        while (!garbage.isEmpty() || !areFactoriesEmpty()) {
 
             try {
                 Player currentPlayer = players[currentPlayerIndex];
@@ -93,6 +99,7 @@ public class AzulGame {
                 PlayChoice choice;
                 do {
                     display();
+                    System.out.printf("Player #%d to play%n", currentPlayerIndex + 1);
                     choice = currentPlayer.choosePieces(Arrays.asList(factories), garbage);
                 } while (!validateChoice(choice, currentPlayer));
 
@@ -118,7 +125,7 @@ public class AzulGame {
                 if (currentPlayerIndex >= players.length) {
                     currentPlayerIndex = 0;
                 }
-            } catch ( PiecesNotFoundException e) {
+            } catch (PlayerException | PiecesNotFoundException e) {
                 throw new GameStateException("Failure in player round", e);
             }
         }
@@ -170,12 +177,59 @@ public class AzulGame {
     }
 
     private void display() {
+        int i = 0;
+        for (Factory factory : factories) {
+            System.out.printf("Factory #%d: %s%n", i+1, factory);
+            i++;
+        }
+
+        System.out.printf("Garbage: %s%n", garbage);
+
+
+        i = 0;
+        for (Player player : players) {
+            System.out.printf("Player #%d%n", i+1);
+            System.out.println("========================================");
+            System.out.println(player);
+            i++;
+        }
+
+        System.out.println("========================================");
+        System.out.println("========================================");
 
     }
 
     private boolean validateChoice(PlayChoice choice, Player player) {
 
-        return false;
+        // validate if place(factory/garbage) has pieces with that pattern
+        switch (choice.getPlaceType()) {
+            case FACTORY -> {
+                if (!choice.getFactory().hasPattern(choice.getPattern())) {
+                    return false;
+                }
+            }
+            case GARBAGE -> {
+                if (!choice.getGarbage().hasPattern(choice.getPattern())) {
+                    return false;
+                }
+            }
+        }
+
+        Piece patternOnPatternLine = player.getPatternOfPatternLine(choice.getPatternLineIndex());
+        if (patternOnPatternLine != null) {
+            // validate if pattern line has pieces, the chosen pattern have to correspond to the pattern line
+            if (choice.getPattern() != patternOnPatternLine) {
+                return false;
+            }
+        } else {
+            // validate if pattern line is empty, pattern isn't present on the wall
+            if (player.hasPattern(choice.getPatternLineIndex(), choice.getPattern())) {
+                return false;
+            }
+        }
+
+        // valid choice
+        return true;
     }
 
     private boolean areFactoriesEmpty() {

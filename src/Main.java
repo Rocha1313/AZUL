@@ -1,16 +1,31 @@
+
+import azul.AzulGame;
+import azul.GlobalResources;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class Main {
     public static void main(String[] args) {
         // TODO: validate num of players
+
         System.out.print("Number of Players (2-4): ");
-        int numPlayers = GlobalResources.sc.nextInt();
+        int numPlayers = Integer.valueOf(GlobalResources.SCANNER.nextLine());
+
 
         AzulGame ag = new AzulGame(numPlayers);
 
         // play rounds until game over
-        while(!ag.playRound());
+        while (!ag.playRound()) ;
 
         ag.getStandings();
 
-        // Player with the biggest score Wins
+
+        // azul.player.Player with the biggest score Wins
+
+        // Player with the biggest score Wins*/
+
     }
 }
+
