@@ -1,3 +1,5 @@
+package azul.exceptions;
+
 public class GameStateException extends RuntimeException {
     public GameStateException() {
     }

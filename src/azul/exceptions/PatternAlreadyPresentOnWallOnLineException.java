@@ -1,4 +1,6 @@
-public class PatternAlreadyPresentOnWallOnLineException extends BagException {
+package azul.exceptions;
+
+public class PatternAlreadyPresentOnWallOnLineException extends PlayerException {
     public PatternAlreadyPresentOnWallOnLineException() {
     }
 

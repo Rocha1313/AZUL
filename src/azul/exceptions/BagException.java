@@ -1,3 +1,5 @@
+package azul.exceptions;
+
 public class BagException extends Exception {
     public BagException() {
     }

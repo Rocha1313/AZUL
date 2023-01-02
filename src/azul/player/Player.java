@@ -1,4 +1,11 @@
-import java.sql.SQLOutput;
+package azul.player;
+
+import azul.GlobalResources;
+import azul.components.*;
+import azul.exceptions.PatternAlreadyPresentOnWallOnLineException;
+import azul.exceptions.PiecesNotTheSamePatternException;
+import azul.exceptions.PlayerException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -18,8 +25,8 @@ public class Player {
         score = 0;
         wall = new Wall();
         patternLines = new ArrayList<>(NUMBER_OF_PATTERN_LINES);
-        for (int i = 0; i < patternLines.size(); i++) {
-            patternLines.set(i + 1, new ArrayList<>(i));
+        for (int i = 0; i < NUMBER_OF_PATTERN_LINES; i++) {
+            patternLines.add(new ArrayList<>(i));
         }
 
         leftOverLine = new ArrayList<>(NUMBER_OF_PIECES_LEFTOVER_LINE);
@@ -38,12 +45,13 @@ public class Player {
 
         while (!validChoice) {
             System.out.print("Choose place (factory/garbage): ");
-            input = GlobalResources.sc.nextLine();
-            if (Place.FACTORY.name().startsWith(input.toUpperCase()) || Place.FACTORY.ordinal() == Integer.valueOf(input) - 1) {
+            input = GlobalResources.SCANNER.nextLine();
+
+            if (Place.FACTORY.name().startsWith(input.toUpperCase())) {
                 place = Place.FACTORY;
 
                 System.out.print("Choose factory: ");
-                input = GlobalResources.sc.nextLine();
+                input = GlobalResources.SCANNER.nextLine();
                 Iterator<Factory> iterator = factories.iterator();
                 for (int i = 0; i < factories.size(); i++) {
                     Factory f = iterator.next();
@@ -53,16 +61,17 @@ public class Player {
                 }
 
                 validChoice = factory != null;
-            } else if (Place.GARBAGE.name().startsWith(input.toUpperCase()) || Place.GARBAGE.ordinal() == Integer.valueOf(input) - 1) {
+            } else if (Place.GARBAGE.name().startsWith(input.toUpperCase())) {
                 place = Place.GARBAGE;
                 validChoice = true;
             }
+
         }
 
         validChoice = false;
         while (!validChoice) {
             System.out.print("Pattern: ");
-            input = GlobalResources.sc.nextLine();
+            input = GlobalResources.SCANNER.nextLine();
 
             for (Piece p : Piece.values()) {
                 if (p.name().startsWith(input.toUpperCase())) {
@@ -75,10 +84,11 @@ public class Player {
         validChoice = false;
         while (!validChoice) {
             System.out.print("Pattern Line: ");
-            input = GlobalResources.sc.nextLine();
+            input = GlobalResources.SCANNER.nextLine();
 
             patternLineIndex = Integer.valueOf(input) - 1;
 
+            //
             if (patternLineIndex >= 0 && patternLineIndex < patternLines.size()) {
                 validChoice = true;
             }
@@ -96,11 +106,11 @@ public class Player {
         return finalChoice;
     }
 
-    public void placePieces(int patternLineIndex, Collection<Piece> pieces) throws PiecesNotTheSamePatternException {
+    public void placePieces(int patternLineIndex, Collection<Piece> pieces) throws PlayerException {
         // place pieces in patternLines[patternLineIndex]
         List<Piece> patternLine = patternLines.get(patternLineIndex);
 
-        // if pieces contain starting Piece , move starting piece to leftOverLine
+        // if pieces contain starting azul.components.Piece , move starting piece to leftOverLine
         if (pieces.remove(Piece.STARTING_PIECE)) {
             leftOverLine.add(Piece.STARTING_PIECE);
         }
@@ -167,5 +177,56 @@ public class Player {
 
     public boolean hasWallWithLineCompleted() {
         return false;
+    }
+
+    public boolean hasPattern(int patternLineIndex, Piece pattern) {
+        return wall.hasPatternOnLine(patternLineIndex, pattern);
+    }
+
+    public Piece getPatternOfPatternLine(int patternLineIndex) {
+        List<Piece> patternLine = patternLines.get(patternLineIndex);
+        if (patternLine.isEmpty()) {
+            return null;
+        } else {
+            return patternLine.get(0);
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("score: ");
+        sb.append(score);
+        sb.append("\n");
+
+        for (int i = 0; i < patternLines.size(); i++) {
+            List<Piece> patternLine = patternLines.get(i);
+
+            int blankPieces = patternLines.size() - i + 1;
+            for(int j = 0; j < blankPieces; j++) {
+                sb.append("  ");
+            }
+
+            int notFilled = i + 1 - patternLine.size();
+            for(int j = 0; j < notFilled; j++) {
+                sb.append("◻️");
+            }
+
+            for (Piece p : patternLine) {
+                sb.append(p);
+            }
+
+            sb.append(" ➡️ ");
+            sb.append(wall.lineToString(i));
+            sb.append("\n");
+        }
+
+        sb.append("Leftover: ");
+        for(Piece p : leftOverLine) {
+            sb.append(p);
+        }
+        sb.append("\n");
+
+        return sb.toString();
     }
 }

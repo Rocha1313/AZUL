@@ -1,4 +1,6 @@
-public class PiecesNotTheSamePatternException extends Exception {
+package azul.exceptions;
+
+public class PiecesNotTheSamePatternException extends PlayerException {
     public PiecesNotTheSamePatternException() {
     }
 

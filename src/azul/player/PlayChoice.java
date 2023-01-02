@@ -1,3 +1,10 @@
+package azul.player;
+
+import azul.components.Factory;
+import azul.components.Garbage;
+import azul.components.Piece;
+import azul.components.Place;
+
 public class PlayChoice {
 
     private Place placeType;

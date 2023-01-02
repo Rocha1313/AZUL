@@ -1,3 +1,8 @@
+package azul.components;
+
+import azul.exceptions.NotEnoughPiecesException;
+import azul.exceptions.PieceBagWithEnoughPiecesToFillFactoriesException;
+
 import java.util.Collection;
 
 public interface Bag {

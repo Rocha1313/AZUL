@@ -1,6 +1,6 @@
 package utils;
 
-public enum Colors {
+public enum Color {
     BLUE_BACKGROUND("\u001B[1;44m"),
     CYAN_BACKGROUND("\u001B[1;46m"),
     YELLOW_BACKGROUND("\u001B[1;43m"),
@@ -10,7 +10,7 @@ public enum Colors {
 
     String sequence;
 
-    Colors(String sequence) {
+    Color(String sequence) {
         this.sequence = sequence;
     }
 

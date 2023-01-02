@@ -1,3 +1,5 @@
+package azul.exceptions;
+
 public class NotEnoughPiecesException extends BagException {
     public NotEnoughPiecesException() {
     }
