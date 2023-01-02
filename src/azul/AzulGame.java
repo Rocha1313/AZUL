@@ -120,6 +120,8 @@ public class AzulGame {
                 }
             } catch ( PiecesNotFoundException e) {
                 throw new GameStateException("Failure in player round", e);
+            } catch (PiecesNotTheSamePatternException e) {
+                throw new RuntimeException(e);
             }
         }
         ////////////////////

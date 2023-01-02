@@ -15,7 +15,7 @@ public class Wall {
         wallStatus = new boolean[5][5];
     }
 
-    public int move(Piece p, int line) {
+    public int move(int line, Piece p) {
         // find index of pattern in given line
         int indexOfPiece = findIndexOf(WALL_PATTERN[line], p);
         // mark piece field on the wall
@@ -27,4 +27,7 @@ public class Wall {
         return pieceScore;
     }
 
+    public boolean hasPatternOnLine(int lineIndex, Piece pattern) {
+        return false;
+    }
 }
