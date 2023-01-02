@@ -167,9 +167,12 @@ public class Player {
                 Piece p = patternLine.remove(0);
                 score += wall.move(i, p);
             }
-            // add remaining pieces to the recycler
-            piecesToRecycle.addAll(patternLine);
-            patternLine.clear();
+
+            if (patternLine.size() == i - 1) {
+                // add remaining pieces to the recycler
+                piecesToRecycle.addAll(patternLine);
+                patternLine.clear();
+            }
         }
 
         return piecesToRecycle;
@@ -203,12 +206,12 @@ public class Player {
             List<Piece> patternLine = patternLines.get(i);
 
             int blankPieces = patternLines.size() - i + 1;
-            for(int j = 0; j < blankPieces; j++) {
+            for (int j = 0; j < blankPieces; j++) {
                 sb.append("  ");
             }
 
             int notFilled = i + 1 - patternLine.size();
-            for(int j = 0; j < notFilled; j++) {
+            for (int j = 0; j < notFilled; j++) {
                 sb.append("◻️");
             }
 
@@ -222,7 +225,7 @@ public class Player {
         }
 
         sb.append("Leftover: ");
-        for(Piece p : leftOverLine) {
+        for (Piece p : leftOverLine) {
             sb.append(p);
         }
         sb.append("\n");
