@@ -1,3 +1,5 @@
+package azul.exceptions;
+
 public class FactoryStillHasPiecesException extends FactoryException {
     public FactoryStillHasPiecesException() {
     }

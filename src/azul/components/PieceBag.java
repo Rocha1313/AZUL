@@ -1,3 +1,9 @@
+package azul.components;
+
+import azul.AzulConstants;
+import azul.GlobalResources;
+import azul.exceptions.NotEnoughPiecesException;
+import azul.exceptions.PieceBagWithEnoughPiecesToFillFactoriesException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +15,9 @@ public class PieceBag implements Bag {
 
     public PieceBag() {
         for (Piece piece : Piece.values()) {
+            if(piece.equals(Piece.STARTING_PIECE)) {
+                continue;
+            }
             for (int i = 0; i < AzulConstants.PIECES_PER_PATTERN; i++) {
                 pieces.add(piece);
             }
@@ -39,7 +48,7 @@ public class PieceBag implements Bag {
         }
 
         for (int i = 0; i < AzulConstants.FACTORY_PIECE_CAPACITY; i++) {
-            int randPiece = GlobalResources.random.nextInt(pieces.size());
+            int randPiece = GlobalResources.RANDOM.nextInt(pieces.size());
 
             piecesToFactory.add(pieces.remove(randPiece));
         }

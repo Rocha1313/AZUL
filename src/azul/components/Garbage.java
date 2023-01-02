@@ -1,3 +1,7 @@
+package azul.components;
+
+import azul.exceptions.PiecesNotFoundException;
+
 import java.util.Collection;
 
 public interface Garbage {
@@ -8,4 +12,5 @@ public interface Garbage {
 
     Collection<Piece> getPieces(Piece pattern) throws PiecesNotFoundException;
 
+    boolean hasPattern(Piece pattern);
 }
