@@ -21,6 +21,15 @@ public class Player {
     private List<List<Piece>> patternLines;
     private List<Piece> leftOverLine;
 
+
+    public List<List<Piece>> getPatternLines() {
+        return patternLines;
+    }
+
+    public List<Piece> getLeftOverLine() {
+        return leftOverLine;
+    }
+
     public Player() {
         score = 0;
         wall = new Wall();
@@ -166,13 +175,16 @@ public class Player {
                 // move one piece of pattern line to wall and sum the points of that move to the score
                 Piece p = patternLine.remove(0);
                 score += wall.move(i, p);
-            }
-
-            if (patternLine.size() == i - 1) {
-                // add remaining pieces to the recycler
                 piecesToRecycle.addAll(patternLine);
                 patternLine.clear();
+
             }
+
+            // TODO: SEE ERROR
+
+            // add remaining pieces to the recycler
+            // piecesToRecycle.addAll(patternLine);
+            //patternLine.clear();
         }
 
         return piecesToRecycle;
@@ -205,8 +217,8 @@ public class Player {
         for (int i = 0; i < patternLines.size(); i++) {
             List<Piece> patternLine = patternLines.get(i);
 
-            int blankPieces = patternLines.size() - i + 1;
-            for (int j = 0; j < blankPieces; j++) {
+            int emptySpace = patternLines.size() - i + 1;
+            for (int j = 0; j < emptySpace; j++) {
                 sb.append("  ");
             }
 
@@ -225,9 +237,25 @@ public class Player {
         }
 
         sb.append("Leftover: ");
-        for (Piece p : leftOverLine) {
-            sb.append(p);
+        sb.append("                                                                                    |   ▼       ");
+        sb.append("\n");
+        sb.append("-1| -1| -2| -2| -2| -3| -3|                                               ▶ ☐ ☐ ☐ ☐ ☐ |+2|    |   ☐       ");
+        sb.append("\n");
+        sb.append("                                                                        ----------------------|   ☐       ");
+        sb.append("\n");
+        if (leftOverLine != null) {
+            for (Piece p : leftOverLine) {
+                sb.append(p).append("  ");
+            }
         }
+        sb.append("\n");
+        sb.append("                                                                                   =          |   ☐");
+        sb.append("\n");
+        sb.append("                                                                              =  |+10|  =     |   ☐            ");
+        sb.append("\n");
+        sb.append("                                                                                =     =       |   ☐            ");
+        sb.append("\n");
+        sb.append("                                                                                              |  |+7|               ");
         sb.append("\n");
 
         return sb.toString();

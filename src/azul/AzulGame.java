@@ -8,6 +8,7 @@ import azul.player.Player;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import utils.Color;
 
 public class AzulGame {
 
@@ -167,6 +168,7 @@ public class AzulGame {
         return gameOver;
     }
 
+    // TODO: FINAL
     //   - calculate final bonus points
     //     - lines +2
     //     - columns +7
@@ -179,7 +181,7 @@ public class AzulGame {
     private void display() {
         int i = 0;
         for (Factory factory : factories) {
-            System.out.printf("Factory #%d: %s%n", i+1, factory);
+            System.out.printf("Factory #%d: %s%n", i + 1, factory);
             i++;
         }
 
@@ -188,8 +190,10 @@ public class AzulGame {
 
         i = 0;
         for (Player player : players) {
-            System.out.printf("Player #%d%n", i+1);
             System.out.println("========================================");
+            System.out.printf(Color.RED_BACKGROUND + "Player #%d%n" + Color.RESET, i + 1);
+            System.out.println();
+
             System.out.println(player);
             i++;
         }

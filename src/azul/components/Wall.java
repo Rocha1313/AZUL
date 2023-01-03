@@ -1,9 +1,15 @@
 package azul.components;
 
 import azul.components.Piece;
+import azul.player.Player;
 import utils.Color;
+import azul.player.Player;
+
+import java.util.List;
 
 public class Wall {
+
+    Player players;
     private static final Piece[][] WALL_PATTERN = {
             {Piece.SNOWMAN, Piece.GIFT, Piece.SANTA, Piece.CHRISTMAS_TREE, Piece.REINDEER},
             {Piece.REINDEER, Piece.SNOWMAN, Piece.GIFT, Piece.SANTA, Piece.CHRISTMAS_TREE},
@@ -63,6 +69,27 @@ public class Wall {
         if (score == 0) {
             score = 1;
         }
+
+            if()
+
+                if (player.getLeftOverLine().get(0) != null) {
+                    score -= score - 1;
+                } else if (player.getLeftOverLine().get(1) != null) {
+                    score -= score - 1;
+                } else if (player.getLeftOverLine().get(2) != null) {
+                    score -= score - 2;
+                } else if (player.getLeftOverLine().get(3) != null) {
+                    score -= score - 2;
+                } else if (player.getLeftOverLine().get(4) != null) {
+                    score -= score - 2;
+                } else if (player.getLeftOverLine().get(5) != null) {
+                    score -= score - 3;
+                } else if (player.getLeftOverLine().get(6) != null) {
+                    score -= score - 3;
+                }
+
+
+
 
         return score;
     }

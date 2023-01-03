@@ -9,7 +9,7 @@ public enum Piece {
     SNOWMAN("⛄️", Color.BLUE_BACKGROUND),
     REINDEER("🦌", Color.CYAN_BACKGROUND),
 
-    STARTING_PIECE("🤯", Color.RESET);
+    STARTING_PIECE("1️⃣", Color.RESET);
 
     private final String pattern;
     private final Color color;
