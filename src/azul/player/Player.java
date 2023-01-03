@@ -6,10 +6,7 @@ import azul.exceptions.PatternAlreadyPresentOnWallOnLineException;
 import azul.exceptions.PiecesNotTheSamePatternException;
 import azul.exceptions.PlayerException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Player {
 
@@ -168,11 +165,9 @@ public class Player {
                 score += wall.move(i, p);
             }
 
-            if (patternLine.size() == i - 1) {
-                // add remaining pieces to the recycler
-                piecesToRecycle.addAll(patternLine);
-                patternLine.clear();
-            }
+            // add remaining pieces to the recycler
+            piecesToRecycle.addAll(patternLine);
+            patternLine.clear();
         }
 
         return piecesToRecycle;
