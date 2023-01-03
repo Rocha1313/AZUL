@@ -1,7 +1,5 @@
 package azul.components;
 
-import azul.components.Piece;
-
 import java.util.Collection;
 
 public interface Recycler {

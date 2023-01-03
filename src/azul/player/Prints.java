@@ -1,3 +1,5 @@
+package azul.player;
+
 import azul.components.Piece;
 
 import java.util.Arrays;
@@ -22,7 +24,7 @@ public class Prints {
         colors[0] = firstColor;
     }
 
-    public static void Board(int playerScore, boolean[][] playerWall, List<List<Piece>> playerStairs, Piece[] playerFloor) {
+    public static void Board(int playerScore, boolean[][] playerWall, List<List<Piece>> playerStairs, List<Piece> playerFloor) {
 
         String[][] wallBoard = new String[5][5];
         String emoji = " ";
@@ -46,10 +48,14 @@ public class Prints {
 
         String[][] stairsBoard = new String[5][5];
         for (int i = 0; i < playerStairs.size(); i++) {
-            for (int j = 0; j < playerStairs.get(i).size(); j++) {
-                if (playerStairs.get(i).get(j) == null) {
+            for (int j = 0; j < 5; j++) {
+                if (playerStairs.get(i).size() < (j + 1)) {
                     stairsBoard[i][j] = "      ";
                     continue;
+                }
+
+                if (j >= playerStairs.get(i).size()){
+                    break;
                 }
                 switch (playerStairs.get(i).get(j)) {
                     case SANTA -> stairsBoard[i][j] = RED_BACKGROUND + "  🎅  " + "\033[39m" + "\033[49m";
@@ -58,23 +64,26 @@ public class Prints {
                     case REINDEER -> stairsBoard[i][j] = WHITE_BACKGROUND + "  🦌  " + "\033[39m" + "\033[49m";
                     case CHRISTMAS_TREE -> stairsBoard[i][j] = CYAN_BACKGROUND + "  🎄  " + "\033[39m" + "\033[49m";
                 }
+
             }
 
         }
 
         String[] floorBoard = new String[7];
-        for (int i = 0; i < playerFloor.length; i++) {
-            if (Objects.isNull(playerFloor[i])) {
+        for (int i = 0; i < floorBoard.length; i++) {
+
+            if (i >= playerFloor.size()) {
                 floorBoard[i] = "      ";
                 continue;
             }
-            switch (playerFloor[i]) {
+
+            switch (playerFloor.get(i)) {
                 case SANTA -> floorBoard[i] = RED_BACKGROUND + "  🎅  " + "\033[39m" + "\033[49m";
                 case GIFT -> floorBoard[i] = YELLOW_BACKGROUND + "  🎁  " + "\033[39m" + "\033[49m";
                 case SNOWMAN -> floorBoard[i] = BLUE_BACKGROUND + "  ⛄  " + "\033[39m" + "\033[49m";
                 case REINDEER -> floorBoard[i] = WHITE_BACKGROUND + "  🦌  " + "\033[39m" + "\033[49m";
                 case CHRISTMAS_TREE -> floorBoard[i] = CYAN_BACKGROUND + "  🎄  " + "\033[39m" + "\033[49m";
-                case STARTING_PIECE -> floorBoard[i] = WHITE_BACKGROUND + "  1️⃣   " + "\033[39m" + "\033[49m";
+                case STARTING_PIECE -> floorBoard[i] = WHITE_BACKGROUND + "  1️⃣  " + "\033[39m" + "\033[49m";
             }
         }
 

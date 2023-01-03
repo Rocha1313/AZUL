@@ -1,15 +1,8 @@
 package azul.components;
 
-import azul.components.Piece;
-import azul.player.Player;
 import utils.Color;
-import azul.player.Player;
-
-import java.util.List;
 
 public class Wall {
-
-    Player players;
     private static final Piece[][] WALL_PATTERN = {
             {Piece.SNOWMAN, Piece.GIFT, Piece.SANTA, Piece.CHRISTMAS_TREE, Piece.REINDEER},
             {Piece.REINDEER, Piece.SNOWMAN, Piece.GIFT, Piece.SANTA, Piece.CHRISTMAS_TREE},
@@ -50,11 +43,11 @@ public class Wall {
         // calculate vertical score
         int verticalCount = 0;
         // count pieces up
-        for (int i = lineIndex - 1; i >= 0 && wallStatus[lineIndex][i]; i--) {
+        for (int i = lineIndex - 1; i >= 0 && wallStatus[i][indexOfPiece]; i--) {
             verticalCount++;
         }
         // count pieces down
-        for (int i = lineIndex + 1; i < wallStatus.length && wallStatus[lineIndex][i]; i++) {
+        for (int i = lineIndex + 1; i < wallStatus.length && wallStatus[i][indexOfPiece]; i++) {
             verticalCount++;
         }
 
@@ -70,27 +63,6 @@ public class Wall {
             score = 1;
         }
 
-            if()
-
-                if (player.getLeftOverLine().get(0) != null) {
-                    score -= score - 1;
-                } else if (player.getLeftOverLine().get(1) != null) {
-                    score -= score - 1;
-                } else if (player.getLeftOverLine().get(2) != null) {
-                    score -= score - 2;
-                } else if (player.getLeftOverLine().get(3) != null) {
-                    score -= score - 2;
-                } else if (player.getLeftOverLine().get(4) != null) {
-                    score -= score - 2;
-                } else if (player.getLeftOverLine().get(5) != null) {
-                    score -= score - 3;
-                } else if (player.getLeftOverLine().get(6) != null) {
-                    score -= score - 3;
-                }
-
-
-
-
         return score;
     }
 
@@ -100,6 +72,7 @@ public class Wall {
         return wallStatus[lineIndex][patternIndex];
     }
 
+    // returns the index of the given pattern from the given line
     private int indexOfPattern(int lineIndex, Piece pattern) {
         for (int i = 0; i < WALL_PATTERN[lineIndex].length; i++) {
             Piece p = WALL_PATTERN[lineIndex][i];
@@ -109,7 +82,6 @@ public class Wall {
         }
         return -1;
     }
-
 
     public String lineToString(int lineIndex) {
         StringBuilder sb = new StringBuilder();
@@ -143,5 +115,93 @@ public class Wall {
         }
 
         return sb.toString();
+    }
+
+    public boolean hasLineCompleted() {
+        // for each line on the wall
+        for (int i = 0; i < wallStatus.length; i++){
+            // Proved the current line to be completed, because there was no missing pieces on the wall
+            if (isLineCompleted(i)) {
+                return true;
+            }
+        }
+
+        // no line was found to be completed
+        return false;
+    }
+
+    private boolean isLineCompleted(int lineIndex) {
+        // check if this line is completed
+        boolean lineCompleted = true;
+        for (int j = 0; j < wallStatus[lineIndex].length; j++) {
+            // if piece is missing, it's not completed
+            if (!wallStatus[lineIndex][j]) {
+                lineCompleted = false;
+                break;
+            }
+        }
+
+        return lineCompleted;
+    }
+
+    public int linesCompleted() {
+        int linesCompleted = 0;
+        for(int i = 0; i < wallStatus.length; i++) {
+            if(isLineCompleted(i)) {
+                linesCompleted++;
+            }
+        }
+        return linesCompleted;
+    }
+
+    public int columnsCompleted() {
+        int columnsCompleted = 0;
+
+        // starting on the first line
+        if(0 < wallStatus.length) {
+            // for every column in the first line
+            for(int j = 0; j < wallStatus[0].length; j++) {
+                // assume its completed
+                boolean columnCompleted = true;
+                for(int i = 0; i < wallStatus[i].length; i++) {
+                    // check if piece is missing disproving the assumption
+                    if(!wallStatus[i][j]) {
+                        columnCompleted = false;
+                    }
+                }
+
+                if(columnCompleted) {
+                    columnsCompleted++;
+                }
+            }
+
+        }
+
+        return columnsCompleted;
+    }
+
+    public int patternsCompleted() {
+        int patternsCompleted = 0;
+
+        // for each piece that exists
+        for(Piece p : Piece.values()) {
+            boolean patternCompleted = true;
+            // check that each line has this pattern
+            for(int i = 0; i < wallStatus.length; i++) {
+                if(!wallStatus[i][indexOfPattern(i, p)]) {
+                    patternCompleted = false;
+                }
+            }
+
+            if(patternCompleted) {
+                patternsCompleted++;
+            }
+        }
+
+        return patternsCompleted;
+    }
+
+    public boolean[][] getWallStatus() {
+        return wallStatus;
     }
 }

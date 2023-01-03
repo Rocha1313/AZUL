@@ -1,7 +1,6 @@
 package azul.components;
 
 import azul.AzulConstants;
-import azul.components.Factory;
 import azul.exceptions.FactoryStillHasPiecesException;
 import azul.exceptions.NotEnoughPiecesException;
 import azul.exceptions.PiecesNotFoundException;

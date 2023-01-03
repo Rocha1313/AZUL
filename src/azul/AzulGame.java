@@ -5,9 +5,8 @@ import azul.exceptions.*;
 import azul.player.PlayChoice;
 import azul.player.Player;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+
 import utils.Color;
 
 public class AzulGame {
@@ -30,7 +29,7 @@ public class AzulGame {
 
         players = new Player[numPlayers];
         for (int i = 0; i < players.length; i++) {
-            players[i] = new Player();
+            players[i] = new Player(i);
         }
 
         // Choose randomly who starts the game
@@ -100,6 +99,8 @@ public class AzulGame {
                 PlayChoice choice;
                 do {
                     display();
+                    displayFactoriesAndGarbage();
+                    System.out.println();
                     System.out.printf("Player #%d to play%n", currentPlayerIndex + 1);
                     choice = currentPlayer.choosePieces(Arrays.asList(factories), garbage);
                 } while (!validateChoice(choice, currentPlayer));
@@ -174,11 +175,32 @@ public class AzulGame {
     //     - columns +7
     //     - All pieces of a pattern +10
     //   - return array sorted by position
-    public Player[] getStandings() {
-        return null;
+    public List<Player> getStandings() {
+        // copy players
+        List<Player> playerStandings = new ArrayList<>();
+        for (Player p : players) {
+            playerStandings.add(p);
+        }
+
+        Comparator<Player> playerComparatorByScore = new Comparator<Player>() {
+            @Override
+            public int compare(Player onePlayer, Player anotherPlayer) {
+                if (onePlayer.getScore() < anotherPlayer.getScore()) {
+                    return -1;
+                } else if (onePlayer.getScore() == anotherPlayer.getScore()) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        };
+
+        Collections.sort(playerStandings, playerComparatorByScore);
+
+        return playerStandings;
     }
 
-    private void display() {
+    public void displayFactoriesAndGarbage() {
         int i = 0;
         for (Factory factory : factories) {
             System.out.printf("Factory #%d: %s%n", i + 1, factory);
@@ -186,15 +208,18 @@ public class AzulGame {
         }
 
         System.out.printf("Garbage: %s%n", garbage);
+    }
 
-
-        i = 0;
+    private void display() {
+        int i = 0;
         for (Player player : players) {
             System.out.println("========================================");
-            System.out.printf(Color.RED_BACKGROUND + "Player #%d%n" + Color.RESET, i + 1);
+            System.out.printf("%sPlayer #%d%s%n", Color.RED_BACKGROUND, i + 1, Color.RESET);
             System.out.println();
 
-            System.out.println(player);
+            player.printBoard();
+
+            /*System.out.println(player);*/
             i++;
         }
 
@@ -222,8 +247,10 @@ public class AzulGame {
         Piece patternOnPatternLine = player.getPatternOfPatternLine(choice.getPatternLineIndex());
         if (patternOnPatternLine != null) {
             // validate if pattern line has pieces, the chosen pattern have to correspond to the pattern line
-            if (choice.getPattern() != patternOnPatternLine) {
-                return false;
+            if (!player.isPatternLineFull(choice.getPatternLineIndex())) {
+                if (choice.getPattern() != patternOnPatternLine) {
+                    return false;
+                }
             }
         } else {
             // validate if pattern line is empty, pattern isn't present on the wall
