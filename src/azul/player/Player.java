@@ -6,22 +6,26 @@ import azul.exceptions.PatternAlreadyPresentOnWallOnLineException;
 import azul.exceptions.PiecesNotTheSamePatternException;
 import azul.exceptions.PlayerException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Player {
 
     public static final int NUMBER_OF_PATTERN_LINES = 5;
     public static final int NUMBER_OF_PIECES_LEFTOVER_LINE = 7;
+    private static final int WALL_EXTRA_SCORE_LINE = 2;
+    private static final int WALL_EXTRA_SCORE_COLUMN = 7;
+    private static final int WALL_EXTRA_SCORE_PATTERN = 10;
 
+    private int id;
     private int score;
     private Wall wall;
     private List<List<Piece>> patternLines;
     private List<Piece> leftOverLine;
+    private List<Integer> leftOverLineScore;
 
-    public Player() {
+    public Player(int id) {
+        this.id = id;
+
         score = 0;
         wall = new Wall();
         patternLines = new ArrayList<>(NUMBER_OF_PATTERN_LINES);
@@ -30,6 +34,15 @@ public class Player {
         }
 
         leftOverLine = new ArrayList<>(NUMBER_OF_PIECES_LEFTOVER_LINE);
+        leftOverLineScore = new ArrayList<>(Arrays.asList(-1, -1, -2, -2, -2, -3, -3));
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public PlayChoice choosePieces(Collection<Factory> factories, Garbage garbage) {
@@ -50,12 +63,23 @@ public class Player {
             if (Place.FACTORY.name().startsWith(input.toUpperCase())) {
                 place = Place.FACTORY;
 
-                System.out.print("Choose factory: ");
-                input = GlobalResources.SCANNER.nextLine();
+                int factoryNumber = 0;
+                validChoice = false;
+
+                while (!validChoice) {
+                    System.out.print("Choose factory: ");
+                    try {
+                        factoryNumber = Integer.valueOf(GlobalResources.SCANNER.nextLine());
+                        validChoice = true;
+                    } catch (NumberFormatException e) {
+                        validChoice = false;
+                    }
+                }
+
                 Iterator<Factory> iterator = factories.iterator();
                 for (int i = 0; i < factories.size(); i++) {
                     Factory f = iterator.next();
-                    if (i == Integer.valueOf(input) - 1) {
+                    if (i == factoryNumber - 1) {
                         factory = f;
                     }
                 }
@@ -83,10 +107,21 @@ public class Player {
 
         validChoice = false;
         while (!validChoice) {
-            System.out.print("Pattern Line: ");
-            input = GlobalResources.SCANNER.nextLine();
+            int numberInput;
 
-            patternLineIndex = Integer.valueOf(input) - 1;
+
+            while (true){
+                System.out.print("Pattern Line: ");
+                input = GlobalResources.SCANNER.nextLine();
+                try{
+                    numberInput = Integer.parseInt(input);
+                }catch (NumberFormatException nfe){
+                    continue;
+                }
+                break;
+            }
+
+            patternLineIndex = numberInput - 1;
 
             //
             if (patternLineIndex >= 0 && patternLineIndex < patternLines.size()) {
@@ -128,7 +163,12 @@ public class Player {
         }
 
         if (!isPatternValid) {
-            throw new PiecesNotTheSamePatternException(String.format("Expected all pattern pieces to be %s", pattern.name()));
+            if (isPatternLineFull(patternLineIndex)) {
+                leftOverLine.addAll(pieces);
+                return;
+            } else {
+                throw new PiecesNotTheSamePatternException(String.format("Expected all pattern pieces to be %s", pattern.name()));
+            }
         }
 
         // pieces need to have same pattern as existing pieces on patternLines[patternLineIndex]
@@ -158,6 +198,24 @@ public class Player {
     public Collection<Piece> movePiecesToWall() {
         Collection<Piece> piecesToRecycle = new ArrayList<>();
 
+        // deal with leftover line
+        // subtract from score leftover line score
+        for (int i = 0; i < leftOverLine.size(); i++) {
+            Piece p = leftOverLine.get(i);
+
+            int pieceScore = 0;
+            if (i < leftOverLineScore.size()) {
+                pieceScore = leftOverLineScore.get(i);
+            }
+
+            score += pieceScore;
+            piecesToRecycle.add(p);
+        }
+        // Remove pieces of leftover line
+        for (Piece p : piecesToRecycle) {
+            leftOverLine.remove(p);
+        }
+
         // for each pattern Line
         for (int i = 0; i < patternLines.size(); i++) {
             List<Piece> patternLine = patternLines.get(i);
@@ -166,9 +224,7 @@ public class Player {
                 // move one piece of pattern line to wall and sum the points of that move to the score
                 Piece p = patternLine.remove(0);
                 score += wall.move(i, p);
-            }
 
-            if (patternLine.size() == i - 1) {
                 // add remaining pieces to the recycler
                 piecesToRecycle.addAll(patternLine);
                 patternLine.clear();
@@ -178,8 +234,21 @@ public class Player {
         return piecesToRecycle;
     }
 
+    public int finalScore() {
+        // lines
+        score += wall.linesCompleted() * WALL_EXTRA_SCORE_LINE;
+
+        // columns
+        score += wall.columnsCompleted() * WALL_EXTRA_SCORE_COLUMN;
+
+        // patterns
+        score += wall.patternsCompleted() * WALL_EXTRA_SCORE_PATTERN;
+
+        return score;
+    }
+
     public boolean hasWallWithLineCompleted() {
-        return false;
+        return wall.hasLineCompleted();
     }
 
     public boolean hasPattern(int patternLineIndex, Piece pattern) {
@@ -195,6 +264,10 @@ public class Player {
         }
     }
 
+    public void printBoard(){
+        Prints.Board(score, wall.getWallStatus(), patternLines, leftOverLine);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -205,8 +278,8 @@ public class Player {
         for (int i = 0; i < patternLines.size(); i++) {
             List<Piece> patternLine = patternLines.get(i);
 
-            int blankPieces = patternLines.size() - i + 1;
-            for (int j = 0; j < blankPieces; j++) {
+            int emptySpace = patternLines.size() - i + 1;
+            for (int j = 0; j < emptySpace; j++) {
                 sb.append("  ");
             }
 
@@ -225,11 +298,32 @@ public class Player {
         }
 
         sb.append("Leftover: ");
-        for (Piece p : leftOverLine) {
-            sb.append(p);
-        }
+        sb.append("                                                                                    |   ▼       ");
         sb.append("\n");
+        sb.append("-1| -1| -2| -2| -2| -3| -3|                                               ▶ ☐ ☐ ☐ ☐ ☐ |+2|    |   ☐       ");
+        sb.append("\n");
+        sb.append("                                                                        ----------------------|   ☐       ");
+        sb.append("\n");
+        if (leftOverLine != null) {
+            for (Piece p : leftOverLine) {
+                sb.append(p).append("  ");
+            }
+        }
+       sb.append("\n");
+       sb.append("                                                                                   =          |   ☐");
+       sb.append("\n");
+       sb.append("                                                                              =  |+10|  =     |   ☐            ");
+       sb.append("\n");
+       sb.append("                                                                                =     =       |   ☐            ");
+       sb.append("\n");
+       sb.append("                                                                                              |  |+7|               ");
+       sb.append("\n");
 
         return sb.toString();
+    }
+
+    public boolean isPatternLineFull(int patternLineIndex) {
+        return patternLines.get(patternLineIndex).size() == patternLineIndex + 1;
+
     }
 }
